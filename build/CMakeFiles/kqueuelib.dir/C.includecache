@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/error.h
+
+../include/sock.h
+sys/socket.h
+-
+
+/Users/luka/Workspace/echo-server/lib/sock.c
+sock.h
+/Users/luka/Workspace/echo-server/lib/sock.h
+netdb.h
+-
+strings.h
+-
+stdio.h
+-
+stdlib.h
+-
+unistd.h
+-
+fcntl.h
+-
+error.h
+/Users/luka/Workspace/echo-server/lib/error.h
+

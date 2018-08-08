@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/error.h
+
+../include/event_handler.h
+
+../include/sock.h
+sys/socket.h
+-
+
+/Users/luka/Workspace/echo-server/src/serv.c
+stdlib.h
+-
+stdio.h
+-
+sys/event.h
+-
+errno.h
+-
+unistd.h
+-
+sock.h
+/Users/luka/Workspace/echo-server/src/sock.h
+error.h
+/Users/luka/Workspace/echo-server/src/error.h
+event_handler.h
+/Users/luka/Workspace/echo-server/src/event_handler.h
+
