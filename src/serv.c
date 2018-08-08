@@ -20,8 +20,6 @@ int main(int argc, char** argv) {
 
     if (argc == 2)
         listenfd = tcp_listen(NULL, argv[1], NULL);
-    else if (argc == 3)
-        listenfd = tcp_listen(argv[1], argv[2], NULL);
     else
         err_quit("Usage: serv [ <host> ] <service or port>");
         
