@@ -64,11 +64,11 @@ int main(int argc, char** argv) {
                         if (errno != EWOULDBLOCK && errno != EAGAIN)
                             err_sys("read error");
                     } else if (n == 0) {    /* EOF */
+                        event.udata = 1;    
                         if (proc->first == proc->last) {
                             if (close(connfd) == -1)
                                 err_sys("close error");
                         }
-                        event.udata = 1;    
                     } else {
                         proc->last += n;
                     }
