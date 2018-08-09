@@ -63,12 +63,12 @@ int main(int argc, char** argv) {
                     if ( (n = read(connfd, proc->last, proc->buf + BUF_SIZE - proc->last)) == -1) {
                         if (errno != EWOULDBLOCK && errno != EAGAIN)
                             err_sys("read error");
-                    } else if (n == 0) {    /* EOF */
-                        event.udata = 1;    
+                    } else if (n == 0) {    /* recv EOF */    
                         if (proc->first == proc->last) {
                             if (close(connfd) == -1)
                                 err_sys("close error");
-                        }
+                        } else
+                            event.udata = 1;
                     } else {
                         proc->last += n;
                     }
