@@ -15,14 +15,17 @@ int main(int argc, char** argv) {
     int             i, nevents;
     struct kevent   eventlist[MAX_EVENTS], event;
     process_t       processes[MAX_PROC], *proc;
-    const int       kOFFSET = -4;   /* for stdin, stdout, stderr, listenfd */
+    const int       kOffset = -3;   /* for stdin, stdout, stderr, listenfd, kqueuefd */
     ssize_t         n, nwritten;              /* for read and write */    
+
+    /* close unused stdin, stdout */
+    if (close(STDIN_FILENO) == -1 || close(STDOUT_FILENO) == -1)
+        err_sys("close error");
 
     if (argc == 2)
         listenfd = tcp_listen(NULL, argv[1], NULL);
     else
-        err_quit("Usage: serv [ <host> ] <service or port>");
-        
+        err_quit("Usage: server <service or port>");
 
     if ( (kqueuefd = kqueue()) == -1)
         err_sys("kqueue error");
@@ -43,17 +46,17 @@ int main(int argc, char** argv) {
                     if (errno != EAGAIN && errno != EWOULDBLOCK)    /* if non-block, ignore these errno */
                         err_sys("accept error");
                 } else {
-                    if (connfd + kOFFSET >= MAX_PROC) {
+                    if (connfd + kOffset >= MAX_PROC) {
                         if (close(connfd) == -1)    /* if exceeds MAX_PROC, close connfd immediately */
                             err_sys("close error");
-                    } else {                        
+                    } else {                     
                         setnonblock(connfd);
                         register_event(kqueuefd, connfd, kRead | kWrite);
                     }
                 }
             } else {
                 connfd = event.ident;
-                proc = processes + connfd + kOFFSET;
+                proc = processes + connfd + kOffset;
 
                 if (event.filter == EVFILT_READ) {
                     
@@ -61,18 +64,16 @@ int main(int argc, char** argv) {
                         if (errno != EWOULDBLOCK && errno != EAGAIN)
                             err_sys("read error");
                     } else if (n == 0) {    /* EOF */
-                        if (shutdown(connfd, SHUT_RD) == -1)
-                            err_sys("SHUT_RD error");
                         if (proc->first == proc->last) {
-                            if (shutdown(connfd, SHUT_WR) == -1)  /* send FIN */
-                                err_sys("SHUT_WR error");
+                            if (close(connfd) == -1)
+                                err_sys("close error");
                         }
+                        event.udata = 1;    
                     } else {
                         proc->last += n;
-                        enable_event(kqueuefd, connfd, kWrite);
                     }
                 }
-                else {
+                else {  /* EVFILT_WRITE */
                     if ( (n = proc->last - proc->first) > 0) {
                         if ( (nwritten = write(connfd, proc->first, n)) == -1) {
                             if (errno != EAGAIN && errno != EWOULDBLOCK)
@@ -81,6 +82,10 @@ int main(int argc, char** argv) {
                             proc->first += nwritten;
                             if (proc->first == proc->last) {
                                 proc->first = proc->last = proc->buf;   /* back to beginning of buf */
+                                if (event.udata) {
+                                    if (close(connfd) == -1)
+                                        err_sys("close error");
+                                }
                             }
                         }
                     }
