@@ -15,8 +15,8 @@ int main(int argc, char** argv) {
     int             i, nevents;
     struct kevent   eventlist[MAX_EVENTS], event;
     process_t       processes[MAX_PROC], *proc;
-    const int       kOffset = -3;   /* for stdin, stdout, stderr, listenfd, kqueuefd */
-    ssize_t         n, nwritten;              /* for read and write */    
+    const int       kOffset = -3;   /* for stderr, listenfd, kqueuefd */
+    ssize_t         n, nwritten;    /* for read and write */    
 
     /* close unused stdin, stdout */
     if (close(STDIN_FILENO) == -1 || close(STDOUT_FILENO) == -1)
@@ -94,6 +94,5 @@ int main(int argc, char** argv) {
         }
     }
 
-    free_proc_arr(processes, MAX_PROC);
-
+    return 0;
 }
