@@ -11,18 +11,14 @@ add_library(kqueuelib
 
 target_include_directories(kqueuelib PRIVATE include)
 
-target_compile_options(kqueuelib
-    PRIVATE -Wall -Wextra -pedantic -ansi
-)
-
 # server
 
 add_executable(server src/serv.c)
 
 target_include_directories(server PRIVATE include)
 
-target_compile_options(server
-    PRIVATE -Wall -Wextra -pedantic -ansi
-)
+# compile options
+
+add_compile_options(-Wall -Wextra -pedantic -ansi)
 
 target_link_libraries(server PRIVATE kqueuelib)
