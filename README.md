@@ -16,17 +16,23 @@ build
 `cd build` to perform out-of-place build:
 
 ```shell
-cd build && cmake ..
+$ cd build && cmake ..
 ```
 generate server:
 
 ```shell
-make server
+$ make server
 ```
 
 usage
 ---
 
+server:
 ```shell
-server <port>
+$ server <port>
+```
+
+client:
+```shell
+$ python3 client <server or ipaddress> <port>
 ```
