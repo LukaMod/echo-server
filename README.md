@@ -29,10 +29,10 @@ usage
 
 server:
 ```shell
-$ server <port>
+$ server [ <server or IPaddress> ]<port>
 ```
 
 client:
 ```shell
-$ python3 client <server or ipaddress> <port>
+$ python3 client <server or IPaddress> <port>
 ```
