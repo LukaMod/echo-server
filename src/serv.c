@@ -24,7 +24,8 @@ int main(int argc, char** argv) {
 
     if (argc == 2) {
         /* if didn't specify ipaddress, tcp_listen() would open two fd,
-         * one for IPv6 as default and another for IPv4(I guess...)
+         * one for IPv6 as default and another for IPv4(I guess...),
+         * so offset should be -4
          */
         offset = -4;
         listenfd = tcp_listen(NULL, argv[1], NULL);
