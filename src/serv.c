@@ -15,15 +15,21 @@ int main(int argc, char** argv) {
     int             i, nevents;
     struct kevent   eventlist[MAX_EVENTS], event;
     process_t       processes[MAX_PROC], *proc;
-    const int       kOffset = -3;   /* for stderr, listenfd, kqueuefd */
+    int             offset = -3;    /* for stderr, listenfd, kqueuefd */
     ssize_t         n, nwritten;    /* for read and write */    
 
     /* close unused stdin, stdout */
     if (close(STDIN_FILENO) == -1 || close(STDOUT_FILENO) == -1)
         err_sys("close error");
 
-    if (argc == 2)
+    if (argc == 2) {
+        /* if didn't specify ipaddress, tcp_listen() would open two fd,
+         * one for IPv6 as default and another for IPv4(I guess...)
+         */
+        offset = -4;
         listenfd = tcp_listen(NULL, argv[1], NULL);
+    } else if (argc == 3)
+        listenfd = tcp_listen(argv[1], argv[2], NULL);
     else
         err_quit("Usage: server <service or port>");
 
@@ -46,7 +52,7 @@ int main(int argc, char** argv) {
                     if (errno != EAGAIN && errno != EWOULDBLOCK)    /* if non-block, ignore these errno */
                         err_sys("accept error");
                 } else {
-                    if (connfd + kOffset >= MAX_PROC) {
+                    if (connfd + offset >= MAX_PROC) {
                         if (close(connfd) == -1)    /* if exceeds MAX_PROC, close connfd immediately */
                             err_sys("close error");
                     } else {                     
@@ -56,7 +62,7 @@ int main(int argc, char** argv) {
                 }
             } else {
                 connfd = event.ident;
-                proc = processes + connfd + kOffset;
+                proc = processes + connfd + offset;
 
                 if (event.filter == EVFILT_READ) {
                     
