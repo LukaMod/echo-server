@@ -13,10 +13,10 @@ This is a simple `kqueue` based non-blocking I/O TCP echo server
 build
 ---
 
-`cd build` to perform out-of-place build:
+out-of-place build:
 
 ```shell
-$ cd build && cmake ..
+$ mkdir build && cd build && cmake ..
 ```
 generate server:
 
