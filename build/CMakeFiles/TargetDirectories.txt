@@ -1,4 +1,0 @@
-/Users/luka/Workspace/echo-server/build/CMakeFiles/rebuild_cache.dir
-/Users/luka/Workspace/echo-server/build/CMakeFiles/edit_cache.dir
-/Users/luka/Workspace/echo-server/build/CMakeFiles/server.dir
-/Users/luka/Workspace/echo-server/build/CMakeFiles/kqueuelib.dir
